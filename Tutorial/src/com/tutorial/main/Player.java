@@ -39,6 +39,10 @@ public class Player extends GameObject {
 					//collision code
 					HUD.HEALTH -= 2;
 				}
+			}else if(tempObject.getID() == ID.BossEnemy) {
+				if(getBounds().intersects(tempObject.getBounds())) {
+					HUD.HEALTH -= 1000;
+				}
 			}
 		}
 	}
