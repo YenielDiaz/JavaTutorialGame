@@ -13,11 +13,14 @@ public class Menu extends MouseAdapter{
 	
 	private Game game;
 	private Handler handler;
+	private HUD hud;
+	
 	private Random r = new Random();
 	
-	public Menu(Game game, Handler handler) {
+	public Menu(Game game, Handler handler, HUD hud) {
 		this.game = game;
 		this.handler = handler;
+		this.hud = hud;
 	}
 	public void mousePressed(MouseEvent e) {
 		int mx = e.getX();
@@ -28,6 +31,7 @@ public class Menu extends MouseAdapter{
 			if(mouseOver(mx, my, 210, 150, 200, 64)) {
 				game.gameState = STATE.Game;
 				handler.addObject(new Player(Game.WIDTH/2 - 32,Game.HEIGHT/2 - 32, ID.Player, handler));
+				handler.clearEnemies();
 				handler.addObject(new BasicEnemy(r.nextInt(Game.WIDTH - 50), r.nextInt(Game.HEIGHT - 50), ID.BasicEnemy, handler));
 			}
 			
@@ -49,8 +53,28 @@ public class Menu extends MouseAdapter{
 				game.gameState = STATE.Menu;
 				return;
 			}
+		//back button for gameOver	
+		}else if(game.gameState == STATE.GameOver) {
+			if(mouseOver(mx, my, 210, 250, 200, 64)) {
+				game.gameState = STATE.Menu;
+				hud.setLevel(1);
+				hud.setScore(0);
+				return;
+			}
 		}
 		
+		//tryAgain button for gameOver
+		if(game.gameState == STATE.GameOver) {
+			if(mouseOver(mx, my, 210, 350, 200, 64)) {
+				game.gameState = STATE.Game;
+				hud.setLevel(1);
+				hud.setScore(0);
+				handler.addObject(new Player(Game.WIDTH/2 - 32,Game.HEIGHT/2 - 32, ID.Player, handler));
+				handler.clearEnemies();
+				handler.addObject(new BasicEnemy(r.nextInt(Game.WIDTH - 50), r.nextInt(Game.HEIGHT - 50), ID.BasicEnemy, handler));
+			}
+				
+		}
 	}
 	
 	public void mouseReleased(MouseEvent e) {
@@ -112,6 +136,25 @@ public class Menu extends MouseAdapter{
 			g.setFont(fnt2);
 			g.drawRect(210, 350, 200, 64);
 			g.drawString("Back", 275, 390);
+		}
+		else if(game.gameState == STATE.GameOver) {
+			Font fnt = new Font("arial", 1, 50);
+			Font fnt2 = new Font("arial", 1, 30);
+			Font fnt3 = new Font("arial", 1, 20);
+			
+			g.setFont(fnt);
+			g.setColor(Color.white);
+			g.drawString("GameOver", 180, 70);
+			
+			g.setFont(fnt3);
+			g.drawString("You lost! " + "Score: " + hud.getScore(), 185, 100);
+			
+			g.setFont(fnt2);
+			g.drawRect(210, 250, 200, 64);
+			g.drawString("Back", 275, 290);
+			
+			g.drawRect(210, 350, 200, 64);
+			g.drawString("Try Again", 240, 390);
 		}
 		
 		
